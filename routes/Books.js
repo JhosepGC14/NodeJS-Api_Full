@@ -6,13 +6,13 @@ const bodyParser = require('body-parser');
 appRouter.use(bodyParser.urlencoded({ extended: true }));
 appRouter.use(bodyParser.json());
 
-//Aqui estoy traendo todas los libros de la barberia con Procedimiento almacenado
+//Aqui estoy trayendo todas los libros de la barberia con Procedimiento almacenado desde Mysql
 let sql = `call usp_listar_books();`;
 let usp_post = `call usp_insertar_books(?,?,?);`;
 let usp_delete = `call usp_delete_books(?);`;
 let usp_search = `call usp_search_books(?);`
 
-//endpoint GET
+//ENDPOINT DE GET PARA LISTAR TODA LA TABLA
 appRouter.get('/books', (req, res) => {
     con.query(sql, (error, results) => {
         if (error) {
@@ -22,7 +22,7 @@ appRouter.get('/books', (req, res) => {
     });
 });
 
-//endpoint POST
+//ENDPOINT DE POST
 appRouter.post('/books', (req, res) => {
     const book = {
         title: req.body.book_title,
@@ -38,7 +38,7 @@ appRouter.post('/books', (req, res) => {
 });
 
 
-//endpoint para eliminar datos de la tabla
+//ENDPOINT PARA ELIMINAR DATO POR ID
 appRouter.delete('/books', (req, res) => {
     const borrar = {
         codigo: req.body.id_book,
@@ -52,7 +52,7 @@ appRouter.delete('/books', (req, res) => {
     });
 });
 
-//endpoint para eliminar datos de la tabla
+//ENDPOINT PARA BUSQUEDA POR ID
 appRouter.get('/books/:id_book', (req, res) => {
     const search = {
         codigo: req.params.id_book,
