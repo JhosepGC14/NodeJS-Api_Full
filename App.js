@@ -9,7 +9,7 @@ app.listen('3000',()=>{
 
 //validacion exigira al usuario una url a navegar
 app.get('/',(req,res)=>{
-    res.send('INGRESA UN URL A NAVEGAR')
+    res.send('INGRESA UN URL A NAVEGAR, PORFAVOR')
 })
 
 const bookRouter = require('./routes/Books');

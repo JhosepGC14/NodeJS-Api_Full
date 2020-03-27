@@ -10,6 +10,7 @@ appRouter.use(bodyParser.json());
 let sql = `call usp_listar_books();`;
 let usp_post = `call usp_insertar_books(?,?,?);`;
 let usp_delete = `call usp_delete_books(?);`;
+let usp_search = `call usp_search_books(?);`
 
 //endpoint GET
 appRouter.get('/books', (req, res) => {
@@ -32,7 +33,7 @@ appRouter.post('/books', (req, res) => {
         if (error) {
             throw error;
         }
-        res.send(results);
+        res.send(results[0]);
     });
 });
 
@@ -46,8 +47,22 @@ appRouter.delete('/books', (req, res) => {
         if (error) {
             throw error;
         }
-        res.send(results);
+        res.send(results[0]);
         console.log("REGISTRO ELIMINADO CORRECTAMENTE")
+    });
+});
+
+//endpoint para eliminar datos de la tabla
+appRouter.get('/books/:id_book', (req, res) => {
+    const search = {
+        codigo: req.params.id_book,
+    }
+    con.query(usp_search, [search.codigo], (error, results, fields) => {
+        if (error) {
+            throw error;
+        }
+        res.send(results[0]);
+        console.log("RESULTADOS DE BUSQUEDA POR ID EXITOSO");
     });
 });
 
