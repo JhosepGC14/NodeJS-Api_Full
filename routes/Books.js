@@ -10,7 +10,8 @@ appRouter.use(bodyParser.json());
 let sql = `call usp_listar_books();`;
 let usp_post = `call usp_insertar_books(?,?,?);`;
 let usp_delete = `call usp_delete_books(?);`;
-let usp_search = `call usp_search_books(?);`
+let usp_search = `call usp_search_books(?);`;
+let usp_update = `call usp_modificar_books(?,?,?,?)`;
 
 //ENDPOINT DE GET PARA LISTAR TODA LA TABLA
 appRouter.get('/books', (req, res) => {
@@ -21,6 +22,24 @@ appRouter.get('/books', (req, res) => {
         res.send(results[0]);
     });
 });
+
+//ENDPOINT DE PUT PARA MODIFICAR O ACTUALIZAR
+appRouter.put('/books', (req, res)=>{
+    const book={
+        codigo:req.body.id_book,
+        title:req.body.book_title,
+        autor:req.body.book_author,
+        publicado:req.body.book_published,
+    }
+    con.query(usp_update, [book.codigo,book.title, book.autor, book.publicado], (error, results) => {
+        if (error) {
+            throw error;
+        }
+        res.send(results);
+        console.log("REGISTRO SE MODIFICO CORRECTAMENTE")
+    });
+})
+
 
 //ENDPOINT DE POST
 appRouter.post('/books', (req, res) => {
@@ -33,15 +52,16 @@ appRouter.post('/books', (req, res) => {
         if (error) {
             throw error;
         }
-        res.send(results[0]);
+        res.send(results);
+        console.log("REGISTRO INSERTADO CORRECTAMENTE")
     });
 });
 
 
-//ENDPOINT PARA ELIMINAR DATO POR ID
-appRouter.delete('/books', (req, res) => {
+//ENDPOINT PARA ELIMINAR DATO POR ID (EN POSTMAN TENGO QUE ENVIAR KEY_ID)
+appRouter.delete('/books/:id_book', (req, res) => {
     const borrar = {
-        codigo: req.body.id_book,
+        codigo: req.params.id_book,
     }
     con.query(usp_delete, [borrar.codigo], (error, results) => {
         if (error) {
@@ -52,7 +72,7 @@ appRouter.delete('/books', (req, res) => {
     });
 });
 
-//ENDPOINT PARA BUSQUEDA POR ID
+//ENDPOINT PARA BUSQUEDA POR ID 
 appRouter.get('/books/:id_book', (req, res) => {
     const search = {
         codigo: req.params.id_book,
@@ -65,6 +85,5 @@ appRouter.get('/books/:id_book', (req, res) => {
         console.log("RESULTADOS DE BUSQUEDA POR ID EXITOSO");
     });
 });
-
 
 module.exports = appRouter;
